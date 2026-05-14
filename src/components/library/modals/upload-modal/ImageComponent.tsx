@@ -1,5 +1,6 @@
 import { useRef } from 'react';
-import { Flex, Image, useColorModeValue, FlexProps } from '@chakra-ui/react';
+import { Flex, Image, useColorModeValue, FlexProps, IconButton } from '@chakra-ui/react';
+import { DeleteIcon } from '@chakra-ui/icons';
 import { useIsMobile } from '../../hooks';
 
 const ImageComponent = ({
@@ -7,12 +8,14 @@ const ImageComponent = ({
 	type,
 	selected,
 	thumbnail,
+	onDelete,
 	...props
 }: FlexProps & {
 	src: string;
 	type: string;
 	selected: any;
 	thumbnail?: string;
+	onDelete?: (e: any) => void;
 }) => {
 	const videoRef = useRef<any>(null);
 	const isMobile = useIsMobile();
@@ -37,6 +40,7 @@ const ImageComponent = ({
 	return (
 		<Flex
 			p={1}
+			position='relative'
 			borderRadius='4px'
 			cursor='pointer'
 			w='full'
@@ -50,6 +54,19 @@ const ImageComponent = ({
 				bg: 'background.dark',
 			}}
 			{...props}>
+			{onDelete && (
+				<IconButton
+					icon={<DeleteIcon />}
+					size='xs'
+					colorScheme='red'
+					position='absolute'
+					top={2}
+					right={2}
+					onClick={onDelete}
+					aria-label='Delete image'
+					zIndex={2}
+				/>
+			)}
 			{type == 'video' ? (
 				<video
 					muted

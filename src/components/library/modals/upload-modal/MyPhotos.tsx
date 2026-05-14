@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { Button, Grid } from '@chakra-ui/react';
-import { Column, useGetAllQuery } from '../..';
+import { Column, useGetAllQuery, useDeleteByIdMutation } from '../..';
 import { ImageComponent } from '.';
 
 const MyPhotos = ({ handleSelect, type = 'image' }: { handleSelect: any; type?: string }) => {
@@ -16,6 +16,14 @@ const MyPhotos = ({ handleSelect, type = 'image' }: { handleSelect: any; type?: 
 		filters: { type: type || 'image' },
 	});
 	const [selected, setSelected] = useState<any>(null);
+	const [deleteImage] = useDeleteByIdMutation();
+
+	const handleDelete = (id: string, e: any) => {
+		e.stopPropagation();
+		if (window.confirm('Are you sure you want to delete this image?')) {
+			deleteImage({ path: 'upload', id });
+		}
+	};
 
 	const onLoadMore = () => {
 		if (page < data?.totalPages) setPage(prev => prev + 1);
@@ -51,6 +59,7 @@ const MyPhotos = ({ handleSelect, type = 'image' }: { handleSelect: any; type?: 
 							handleSelect(item?.url);
 						}}
 						selected={selected}
+						onDelete={(e) => handleDelete(item?.key, e)}
 						key={item?._id}
 					/>
 				))}
