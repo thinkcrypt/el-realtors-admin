@@ -1,6 +1,16 @@
 'use client';
-import { useEffect, useState } from 'react';
-import { Button, Grid } from '@chakra-ui/react';
+import { useEffect, useState, useRef } from 'react';
+import {
+	Button,
+	Grid,
+	AlertDialog,
+	AlertDialogBody,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogContent,
+	AlertDialogOverlay,
+	useDisclosure,
+} from '@chakra-ui/react';
 import { Column, useGetAllQuery, useDeleteByIdMutation } from '../..';
 import { ImageComponent } from '.';
 
@@ -16,14 +26,29 @@ const MyPhotos = ({ handleSelect, type = 'image' }: { handleSelect: any; type?: 
 		filters: { type: type || 'image' },
 	});
 	const [selected, setSelected] = useState<any>(null);
-	const [deleteImage] = useDeleteByIdMutation();
+	const [deleteImage, result] = useDeleteByIdMutation();
+	const { isOpen, onOpen, onClose } = useDisclosure();
+	const cancelRef = useRef<any>(undefined);
+	const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
-	const handleDelete = (id: string, e: any) => {
+	const confirmDelete = (id: string, e: any) => {
 		e.stopPropagation();
-		if (window.confirm('Are you sure you want to delete this image?')) {
-			deleteImage({ path: 'upload', id });
+		setDeleteTarget(id);
+		onOpen();
+	};
+
+	const handleDelete = () => {
+		if (deleteTarget) {
+			deleteImage({ path: 'upload', id: deleteTarget });
 		}
 	};
+
+	useEffect(() => {
+		if (result.isSuccess && !result.isLoading) {
+			onClose();
+			setDeleteTarget(null);
+		}
+	}, [result.isSuccess, result.isLoading]);
 
 	const onLoadMore = () => {
 		if (page < data?.totalPages) setPage(prev => prev + 1);
@@ -59,7 +84,7 @@ const MyPhotos = ({ handleSelect, type = 'image' }: { handleSelect: any; type?: 
 							handleSelect(item?.url);
 						}}
 						selected={selected}
-						onDelete={(e) => handleDelete(item?.key, e)}
+						onDelete={(e) => confirmDelete(item?.key, e)}
 						key={item?._id}
 					/>
 				))}
@@ -71,6 +96,32 @@ const MyPhotos = ({ handleSelect, type = 'image' }: { handleSelect: any; type?: 
 				variant='white'>
 				Load More
 			</Button>
+
+			<AlertDialog
+				isOpen={isOpen}
+				leastDestructiveRef={cancelRef}
+				onClose={onClose}>
+				<AlertDialogOverlay>
+					<AlertDialogContent>
+						<AlertDialogHeader fontSize='lg' fontWeight='bold'>
+							Delete Image
+						</AlertDialogHeader>
+
+						<AlertDialogBody>
+							Are you sure you want to delete this image? You can't undo this action afterwards.
+						</AlertDialogBody>
+
+						<AlertDialogFooter>
+							<Button ref={cancelRef} onClick={onClose} size='sm' variant='white'>
+								Cancel
+							</Button>
+							<Button colorScheme='red' onClick={handleDelete} ml={3} size='sm' isLoading={result.isLoading}>
+								Delete
+							</Button>
+						</AlertDialogFooter>
+					</AlertDialogContent>
+				</AlertDialogOverlay>
+			</AlertDialog>
 		</Column>
 	);
 };
