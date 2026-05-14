@@ -102,7 +102,7 @@ const MyPhotos = ({ handleSelect, type = 'image' }: { handleSelect: any; type?: 
 				leastDestructiveRef={cancelRef}
 				onClose={onClose}>
 				<AlertDialogOverlay>
-					<AlertDialogContent>
+					<AlertDialogContent bg='white' _dark={{ bg: 'gray.800' }}>
 						<AlertDialogHeader fontSize='lg' fontWeight='bold'>
 							Delete Image
 						</AlertDialogHeader>
