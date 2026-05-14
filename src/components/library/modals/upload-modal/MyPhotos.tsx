@@ -48,7 +48,7 @@ const MyPhotos = ({ handleSelect, type = 'image' }: { handleSelect: any; type?: 
 			onClose();
 			setDeleteTarget(null);
 		}
-	}, [result.isSuccess, result.isLoading]);
+	}, [result.isSuccess, result.isLoading, onClose]);
 
 	const onLoadMore = () => {
 		if (page < data?.totalPages) setPage(prev => prev + 1);
@@ -108,7 +108,7 @@ const MyPhotos = ({ handleSelect, type = 'image' }: { handleSelect: any; type?: 
 						</AlertDialogHeader>
 
 						<AlertDialogBody>
-							Are you sure you want to delete this image? You can't undo this action afterwards.
+							Are you sure you want to delete this image? You can&apos;t undo this action afterwards.
 						</AlertDialogBody>
 
 						<AlertDialogFooter>
