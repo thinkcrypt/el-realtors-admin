@@ -32,18 +32,30 @@ const VImage: FC<FormDataType> = ({
 	isDisabled = false,
 	style,
 	folder,
+	...props
 }) => {
 	const type = value ? 'edit' : 'add';
+
+	const isFeature =
+		label?.toLowerCase().includes('feature') ||
+		(props?.name && String(props.name).toLowerCase().includes('feature'));
+
+	const aspectRatio = style?.aspectRatio || (isFeature ? '16/9' : undefined);
+	const containerW = style?.w || (aspectRatio ? (isFeature ? '320px' : '260px') : '200px');
+	const containerH = style?.h || (aspectRatio ? 'auto' : '200px');
 
 	const imageComponent = (
 		<ImageContainer
 			w='full'
-			h='full'>
+			h='full'
+			aspectRatio={aspectRatio}
+			objectFit='cover'>
 			<Image
 				h='100%'
 				w='100%'
-				objectFit='contain'
+				objectFit='cover'
 				src={value}
+				alt={label || 'image'}
 			/>
 		</ImageContainer>
 	);
@@ -55,8 +67,11 @@ const VImage: FC<FormDataType> = ({
 				<Label>{label}</Label>
 				<Center
 					{...imageCss}
-					w={style?.w || '200px'}
-					h={style?.h || '200px'}>
+					w={containerW}
+					h={containerH}
+					aspectRatio={aspectRatio}
+					maxW='100%'
+					overflow='hidden'>
 					<UploadModal
 						type={type}
 						handleImage={onChange}

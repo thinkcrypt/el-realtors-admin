@@ -29,45 +29,57 @@ const Sidebar: FC<FlexProps & { closeBtn?: ReactNode }> = ({
 	const title =
 		data?.shop?.name || process.env.NEXT_PUBLIC_STORE_NAME || 'Admin';
 
-	const main =
-		isFetching || !sidebarData
-			? sidebar.map((item, i) => (
-					<Stack key={i}>
-						<SidebarHeading
-							isLoading={isFetching || !sidebarData}
-							show={item?.startOfSection}
-						>
-							{item?.sectionTitle}
-						</SidebarHeading>
-						<Link href={item?.href}>
-							<SidebarItem
-								isLoading={isFetching || !sidebarData}
-								href={item?.href}
-								path={item?.path}
-								icon={item?.icon}
-							>
-								{item?.title}
-							</SidebarItem>
-						</Link>
-					</Stack>
-			  ))
-			: sidebarData.map((item: any, i: number) => (
-					<Stack key={i}>
-						<SidebarHeading isLoading={false} show={item?.startOfSection}>
-							{item?.sectionTitle}
-						</SidebarHeading>
-						<Link href={item?.href}>
-							<SidebarItem
-								isLoading={false}
-								href={item?.href}
-								path={item?.path}
-								icon={item?.icon}
-							>
-								{item?.title}
-							</SidebarItem>
-						</Link>
-					</Stack>
-			  ));
+	const rawItems: any[] = isFetching || !sidebarData ? sidebar : sidebarData;
+
+	const transformedItems: any[] = [];
+	rawItems?.forEach((item: any) => {
+		const isEleganceContent =
+			item?.path === 'elegancecontents' ||
+			item?.href === '/elegancecontents' ||
+			item?.title?.toLowerCase() === 'elegance contents' ||
+			item?.title?.toLowerCase() === 'elegance content';
+
+		if (isEleganceContent) {
+			transformedItems.push({
+				...item,
+				title: 'Home Page Content',
+				href: '/homepage-content',
+				path: 'homepage-content',
+				icon: 'home',
+			});
+			transformedItems.push({
+				...item,
+				title: 'About Us Content',
+				href: '/aboutus-content',
+				path: 'aboutus-content',
+				icon: 'document',
+				startOfSection: false,
+				sectionTitle: undefined,
+			});
+		} else {
+			transformedItems.push(item);
+		}
+	});
+
+	const isLoading = isFetching || !sidebarData;
+
+	const main = transformedItems.map((item: any, i: number) => (
+		<Stack key={item?.href || item?.path || i}>
+			<SidebarHeading isLoading={isLoading} show={item?.startOfSection}>
+				{item?.sectionTitle}
+			</SidebarHeading>
+			<Link href={item?.href}>
+				<SidebarItem
+					isLoading={isLoading}
+					href={item?.href}
+					path={item?.path}
+					icon={item?.icon}
+				>
+					{item?.title}
+				</SidebarItem>
+			</Link>
+		</Stack>
+	));
 	return (
 		<>
 			<SidebarLogo>

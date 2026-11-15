@@ -343,6 +343,21 @@ const sidebar: SidebarItemType[] = [
 
 	{
 		startOfSection: true,
+		sectionTitle: 'Elegance',
+		title: 'Home Page Content',
+		href: '/homepage-content',
+		icon: 'home',
+		path: 'homepage-content',
+	},
+	{
+		title: 'About Us Content',
+		href: '/aboutus-content',
+		icon: 'document',
+		path: 'aboutus-content',
+	},
+
+	{
+		startOfSection: true,
 		sectionTitle: 'Account Settings',
 		title: 'Settings',
 		href: '/settings',

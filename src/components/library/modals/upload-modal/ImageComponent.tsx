@@ -83,10 +83,11 @@ const ImageComponent = ({
 				</video>
 			) : (
 				<Image
-					objectFit='contain'
+					objectFit='cover'
 					src={src}
 					w='full'
-					h='auto'
+					h='full'
+					borderRadius='2px'
 					alt={src}
 				/>
 			)}

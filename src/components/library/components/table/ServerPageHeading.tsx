@@ -14,7 +14,7 @@ import React from 'react';
 
 import ExportModal from '../modals/export/ExportModal';
 import { buttonGroupCss, containerCss, headingCss, subHeadingCss, wrapperCss } from './style';
-import { BackendCreateModal } from '../../modals';
+import { BackendCreateModal, CreateModal } from '../../modals';
 import { Icon } from '../../icon';
 
 type PageHeadingProps = FlexProps & {
@@ -42,6 +42,7 @@ const ServerPageHeading: React.FC<PageHeadingProps> = ({
 	...props
 }) => {
 	const iconColor = useColorModeValue('#fafafa', '#171717');
+	const iconName = table?.button?.icon || (table?.button?.type === 'update' ? 'edit' : 'add');
 	const btn = (
 		<Button
 			size='sm'
@@ -49,7 +50,7 @@ const ServerPageHeading: React.FC<PageHeadingProps> = ({
 			leftIcon={
 				<Icon
 					size={18}
-					name='add'
+					name={iconName}
 					color={iconColor}
 				/>
 			}>
@@ -59,18 +60,34 @@ const ServerPageHeading: React.FC<PageHeadingProps> = ({
 
 	const exportButton = <ExportModal path={path} />;
 	const renderButton = () => {
-		if (isModal)
+		if (table?.button?.custom) return table.button.custom;
+		if (isModal) {
+			if (table?.button?.layout) {
+				return (
+					<CreateModal
+						trigger={btn}
+						type={table?.button?.type || 'post'}
+						id={table?.button?.id}
+						path={path}
+						data={table?.button?.data || []}
+						layout={table?.button?.layout}
+						title={table?.button?.prompt?.title || table?.button?.title || title}
+						invalidate={table?.invalidate}
+						prompt={table?.button?.prompt}
+					/>
+				);
+			}
 			return (
 				<BackendCreateModal
 					trigger={btn}
-					type='post'
+					type={table?.button?.type || 'post'}
 					path={path}
-					data={data}
+					data={table?.button?.data || data}
 					invalidate={table?.invalidate}
 					prompt={table?.button?.prompt}
 				/>
 			);
-		else if (href) return <Link href={href}>{btn}</Link>;
+		} else if (href) return <Link href={href}>{btn}</Link>;
 		else return btn;
 	};
 

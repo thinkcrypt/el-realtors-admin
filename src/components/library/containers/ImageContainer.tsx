@@ -16,16 +16,21 @@ const ImageContainer: FC<ImageContainerProps> = ({
 	size,
 	alt,
 	src,
-
+	h,
+	w,
+	height,
+	width,
 	...props
 }) => {
 	const boxSize = size || 200;
+	const containerHeight = h || height || (size ? `${boxSize}px` : undefined);
+	const containerWidth = w || width || (size ? `${boxSize}px` : undefined);
 
 	const imageComponent = (
 		<Image
 			src={src || PLACEHOLDER_IMAGE}
 			alt={alt || 'image'}
-			objectFit={objectFit || 'contain'}
+			objectFit={objectFit || 'cover'}
 			width='100%'
 			height='100%'
 			style={{ borderRadius: '2px' }}
@@ -37,8 +42,9 @@ const ImageContainer: FC<ImageContainerProps> = ({
 	return (
 		<Center
 			borderRadius='4px'
-			h={`${boxSize}px`}
-			w={`${boxSize}px`}
+			h={containerHeight || `${boxSize}px`}
+			w={containerWidth || `${boxSize}px`}
+			overflow='hidden'
 			bg='whitesmoke'
 			_dark={{ bg: 'background.dark' }}
 			{...props}>

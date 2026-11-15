@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Button, Center, Heading, Progress, Text } from '@chakra-ui/react';
+import { Button, Center, Flex, Heading, Progress, Text } from '@chakra-ui/react';
 import { useAddVideoMutation } from '../../store';
 
 const UploadImage = ({
@@ -13,8 +13,13 @@ const UploadImage = ({
 	folder?: string;
 }) => {
 	const [image, setImage] = React.useState<any>(null);
+	const [targetFolder, setTargetFolder] = React.useState<string>(folder || 'home');
 	const [isDragOver, setIsDragOver] = React.useState(false);
 	const inputRef = React.useRef<HTMLInputElement>(null);
+
+	React.useEffect(() => {
+		if (folder) setTargetFolder(folder);
+	}, [folder]);
 
 	const [trigger, result] = useAddVideoMutation();
 
@@ -29,7 +34,7 @@ const UploadImage = ({
 
 		// Append the file to the FormData object
 		formData.append('image', file);
-		formData.append('folder', folder || 'uploads');
+		formData.append('folder', targetFolder || folder || 'uploads');
 
 		// Trigger the mutation with the FormData object
 		trigger({ body: formData, type: fileType });
@@ -127,6 +132,37 @@ const UploadImage = ({
 			onDragLeave={handleDragLeave}
 			onDrop={handleDrop}
 			transition='all 0.2s ease'>
+			<Flex
+				gap={2}
+				wrap='wrap'
+				align='center'
+				mb={2}>
+				<Text
+					fontSize='12px'
+					fontWeight='600'
+					color='gray.500'>
+					Upload Destination:
+				</Text>
+				{[
+					{ label: 'Home Page', value: 'home' },
+					{ label: 'About Us', value: 'about' },
+					{ label: 'Projects', value: 'projects' },
+					{ label: 'General', value: 'uploads' },
+				].map(item => (
+					<Button
+						key={item.value}
+						size='xs'
+						borderRadius='full'
+						variant={targetFolder === item.value ? 'solid' : 'outline'}
+						colorScheme={targetFolder === item.value ? 'brand' : 'gray'}
+						onClick={e => {
+							e.stopPropagation();
+							setTargetFolder(item.value);
+						}}>
+						{item.label}
+					</Button>
+				))}
+			</Flex>
 			{body}
 		</Center>
 	);
