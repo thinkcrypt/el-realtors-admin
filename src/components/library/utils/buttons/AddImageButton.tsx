@@ -8,15 +8,15 @@ type AddImageButtonProps = FlexProps & {
 	size?: string;
 };
 
-const AddImageButton: FC<AddImageButtonProps> = ({ children, size, ...props }) => {
+const AddImageButton: FC<AddImageButtonProps> = ({ children, size, h, w, height, width, ...props }) => {
 	return (
 		<Center
 			as={motion.div}
 			cursor='pointer'
 			whileTap={{ scale: 0.9 }}
 			flexDir='column'
-			h={size || '100px'}
-			w={size || '100px'}
+			h={h || height || (size === 'full' ? '100%' : size) || '100px'}
+			w={w || width || (size === 'full' ? '100%' : size) || '100px'}
 			border='2px dashed #ccc'
 			borderRadius='8px'
 			color='#ccc'

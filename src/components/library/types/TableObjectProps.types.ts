@@ -39,6 +39,9 @@ type CommonButton = {
 	isModal?: true;
 	dataModel?: any;
 	layout?: any;
+	type?: 'post' | 'update';
+	id?: string;
+	custom?: any;
 };
 
 type RedirectButton = {
@@ -56,9 +59,12 @@ type ModalButton = {
 	icon?: string;
 	path?: never;
 	isModal: true;
-	dataModel: any;
+	dataModel?: any;
 	prompt?: PromptType;
 	layout?: any;
+	type?: 'post' | 'update';
+	id?: string;
+	custom?: any;
 };
 
 type ButtonType = CommonButton | RedirectButton | ModalButton;

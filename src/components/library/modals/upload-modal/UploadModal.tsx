@@ -69,7 +69,9 @@ const UploadModal: FC<UploadModalProps> = ({
 	const buttonTypes = {
 		add: (
 			<AddImageButton
-				size='200px'
+				w='full'
+				h='full'
+				size='full'
 				title={title || 'Add Image'}
 			/>
 		),
@@ -131,6 +133,7 @@ const UploadModal: FC<UploadModalProps> = ({
 									<MyPhotos
 										handleSelect={handleImageSelect}
 										type={fileType || 'image'}
+										folder={folder}
 									/>
 								</TabPanel>
 								<TabPanel sx={styles.panel}>
