@@ -26,9 +26,25 @@ const homeFormFields = [
 	},
 ];
 
+const homeTableFields = [
+	'homeAboutImage',
+	'homeAboutHeading',
+	'homeAboutSubHeading',
+	'homeAboutDescriptionOne',
+	'homeAboutDescriptionTwo',
+	'homeEleganceSubHeading',
+	'homeEleganceHeading',
+	'homeEleganceDescriptionOne',
+	'homeEleganceDescriptionTwo',
+	'homeGalleryImages',
+	'createdAt',
+	'updatedAt',
+];
+
 const table: ServerTableObjectProps = {
 	title: 'Home Page Content',
 	path: 'elegancecontents',
+	fields: homeTableFields,
 	preferences: [
 		'homeAboutImage',
 		'homeAboutHeading',

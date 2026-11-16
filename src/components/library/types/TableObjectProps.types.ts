@@ -5,6 +5,7 @@ type CommonTableProps = {
 	title: string;
 	subTitle?: string;
 	path: string;
+	fields?: string[];
 	filters?: boolean;
 	button?: ButtonType;
 	pagination?: boolean;

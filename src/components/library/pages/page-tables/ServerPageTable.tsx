@@ -39,13 +39,19 @@ const ServerPageTable: FC<TableProps> = ({ table, layoutPath, children }) => {
 	useEffect(() => {
 		if (schemaData) {
 			const tableFields = schemaData?.table;
-			setSchema(tableFields);
-			const defaultFields = tableFields
-				? tableFields?.filter((item: any) => item.type !== 'menu').map((item: any) => item?.dataKey)
+			const allowedFields = table?.fields || table?.preferences;
+			const filteredTableFields = allowedFields
+				? tableFields?.filter((item: any) =>
+						allowedFields?.includes(item?.dataKey) || item?.type === 'menu'
+				  )
+				: tableFields;
+			setSchema(filteredTableFields);
+			const defaultFields = filteredTableFields
+				? filteredTableFields?.filter((item: any) => item.type !== 'menu').map((item: any) => item?.dataKey)
 				: [];
 			dispatch(setFields(defaultFields));
 		}
-	}, [schemaData, schemaLoading]);
+	}, [schemaData, schemaLoading, table?.fields, table?.preferences]);
 
 	const selectable = table?.select?.show ? true : false;
 	const tableFilters = table?.filters !== undefined ? table?.filters : true;
@@ -62,23 +68,33 @@ const ServerPageTable: FC<TableProps> = ({ table, layoutPath, children }) => {
 	const { data: userData } = useGetSelfQuery({});
 
 	useEffect(() => {
-		if (table?.preferences) {
-			dispatch(setPreferences(table?.preferences));
-			setCol(table?.preferences.length + 1);
-			if (table?.hidePreferences) {
-				return;
-			}
-		}
-		const defaultPreferences = schema
-			? schema?.filter((item: any) => item.default).map((item: any) => item?.dataKey)
-			: [];
+		const preferenceKey = layoutPath || table?.path;
+		const allowedFields = table?.fields || table?.preferences;
+
+		const defaultPreferences =
+			table?.preferences && table?.preferences?.length > 0
+				? table.preferences
+				: schema
+				? schema?.filter((item: any) => item.default).map((item: any) => item?.dataKey)
+				: [];
+
 		if (userData && userData?.preferences) {
-			const preference = userData?.preferences[table?.path];
-			const value = preference && preference?.length > 0 ? preference : defaultPreferences;
+			const preference = userData?.preferences[preferenceKey];
+			// Only allow preferences that actually belong to this page's allowedFields
+			const validPreferences = preference?.filter((p: string) =>
+				allowedFields ? allowedFields?.includes(p) : true
+			);
+			const value =
+				validPreferences && validPreferences?.length > 0
+					? validPreferences
+					: defaultPreferences;
 			dispatch(setPreferences(value));
 			setCol(value.length + 1);
+		} else if (defaultPreferences?.length > 0) {
+			dispatch(setPreferences(defaultPreferences));
+			setCol(defaultPreferences.length + 1);
 		}
-	}, [userData, table, schema]);
+	}, [userData, table?.preferences, table?.path, table?.fields, schema, layoutPath]);
 
 	// Create the table headers
 	const header = (
@@ -137,6 +153,7 @@ const ServerPageTable: FC<TableProps> = ({ table, layoutPath, children }) => {
 						data={isSuccess && data} //Data to be displayed in the table
 						preferences={table?.preferences} //Preferences for the table
 						path={table?.path} //Path of the table
+						preferencePath={layoutPath || table?.path} //Preferences storage key
 						hidePreferences={table?.hidePreferences} //Hide preferences
 						selectedItems={selectedItems} //Selected items
 						isError={isError} //If error while fetching data
