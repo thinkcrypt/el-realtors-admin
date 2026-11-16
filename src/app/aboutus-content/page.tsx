@@ -29,9 +29,28 @@ const aboutFormFields = [
 	},
 ];
 
+const aboutTableFields = [
+	'aboutBannerImage',
+	'aboutBannerHeadingOne',
+	'aboutBannerHeadingTwo',
+	'aboutWhoWeAreTitle',
+	'aboutWhoWeAreTextOne',
+	'aboutWhoWeAreTextTwo',
+	'aboutWhoWeAreTextThree',
+	'aboutPhilosophyTitle',
+	'aboutPhilosophyDescription',
+	'aboutPhilosophyImage',
+	'aboutLocationTitle',
+	'aboutLocationDescription',
+	'aboutLocationImage',
+	'createdAt',
+	'updatedAt',
+];
+
 const table: ServerTableObjectProps = {
 	title: 'About Us Content',
 	path: 'elegancecontents',
+	fields: aboutTableFields,
 	preferences: [
 		'aboutBannerImage',
 		'aboutBannerHeadingOne',

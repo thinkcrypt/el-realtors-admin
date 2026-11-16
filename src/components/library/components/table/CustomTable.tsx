@@ -34,6 +34,7 @@ const CustomTable: FC<CustomTableProps> = ({
 	preferences,
 	pagination = true,
 	path,
+	preferencePath,
 	hidePreferences,
 	selectedItems,
 	isError = false,
@@ -92,7 +93,7 @@ const CustomTable: FC<CustomTableProps> = ({
 					<TableSearchContainer>
 						{!hidePreferences && (
 							<Preferences
-								path={path}
+								path={preferencePath || path}
 								schema={schema}
 							/>
 						)}
